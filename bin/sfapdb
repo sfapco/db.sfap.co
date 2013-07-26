@@ -1,0 +1,48 @@
+#!/usr/bin/env node
+
+/**
+ * Module dependencies
+ */
+
+var sfapdb = require('../')
+  , program = require('commander')
+  , net = require('net')
+  , pkg = require('../package')
+  , commands = {}
+
+program
+	.version(pkg.version)
+
+commands.start = program.command('start')
+	.description("start the sfapi database daemon")
+	.option('-p, --port [port]', "port to listen on")
+	.option('-d, --db <path>', "path to database")
+	.action(function () {
+		var port, path, db, server
+
+		port = commands.start.port;
+		path = commands.start.db;
+
+
+		if (!path) throw new Error("missing database path, use -d <path> or --db <path> to set database path");
+
+		var db = sfapdb({
+			path: path,
+			port: port
+		});
+
+
+		server = net.createServer(function (stream) {
+			stream.pipe(db).pipe(stream);
+		}).listen(port || 8668);
+
+	});
+
+
+// parse argument variables
+program.parse(process.argv);
+
+// show usage if arguments were not provided
+if (3 > process.argv.length) {
+	program.help();
+}

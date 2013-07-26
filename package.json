@@ -1,0 +1,21 @@
+{
+  "name": "db.sfap.co",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "make test"
+  },
+  "author": "",
+  "license": "BSD",
+  "dependencies": {
+    "level": "~0.12.0",
+    "multilevel": "~5.3.2",
+    "commander": "~2.0.0",
+    "debug": "~0.7.2",
+    "merge": "~1.1.1"
+  }
+}
