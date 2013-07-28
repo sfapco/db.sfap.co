@@ -13,6 +13,7 @@ var sfapdb = require('../')
 program
 	.version(pkg.version)
 
+
 commands.start = program.command('start')
 	.description("start the sfapi database daemon")
 	.option('-p, --port [port]', "port to listen on")
@@ -33,7 +34,7 @@ commands.start = program.command('start')
 
 
 		server = net.createServer(function (stream) {
-			stream.pipe(db).pipe(stream);
+			stream.pipe(db.server).pipe(stream);
 		}).listen(port || 8668);
 
 	});
@@ -41,6 +42,7 @@ commands.start = program.command('start')
 
 // parse argument variables
 program.parse(process.argv);
+
 
 // show usage if arguments were not provided
 if (3 > process.argv.length) {
