@@ -19,23 +19,26 @@ commands.start = program.command('start')
 	.option('-p, --port [port]', "port to listen on")
 	.option('-d, --db <path>', "path to database")
 	.action(function () {
-		var port, path, db, server
+		var port, path, server, db
 
 		port = commands.start.port;
 		path = commands.start.db;
 
+		if (!path) 
+			throw new Error("missing database path, use -d <path> or --db <path> to set database path");
 
-		if (!path) throw new Error("missing database path, use -d <path> or --db <path> to set database path");
-
-		var db = sfapdb({
-			path: path,
-			port: port
-		});
-
+		db = sfapdb({ path: path });
 
 		server = net.createServer(function (stream) {
-			stream.pipe(db.server).pipe(stream);
+			var dbserver = db.createServer()
+			// dulex stream with db server
+			stream.pipe(dbserver).pipe(stream);
 		}).listen(port || 8668);
+
+		// close db when server ends
+		server.on('close', function () {
+			db.close();
+		});
 
 	});
 
